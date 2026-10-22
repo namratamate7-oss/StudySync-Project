@@ -28,8 +28,8 @@ export default function App() {
 
     setLoading(true)
 
-    const [{ data: projectsData }, { data: profilesData }, { data: requestsData }] =
-      await Promise.all([
+    try {
+      const results = await Promise.all([
         supabase
           .from('projects')
           .select('*')
@@ -42,14 +42,22 @@ export default function App() {
           .order('created_at', { ascending: false }),
       ])
 
-    if (projectsData) setProjects(projectsData as Project[])
-    if (profilesData) {
-      const map = new Map<string, Profile>()
-      ;(profilesData as Profile[]).forEach((p) => map.set(p.id, p))
-      setProfiles(map)
+      const projectsData = results[0].data
+      const profilesData = results[1].data
+      const requestsData = results[2].data
+
+      if (projectsData) setProjects(projectsData as Project[])
+      if (profilesData) {
+        const map = new Map<string, Profile>()
+        ;(profilesData as Profile[]).forEach((p) => map.set(p.id, p))
+        setProfiles(map)
+      }
+      if (requestsData) setJoinRequests(requestsData as JoinRequest[])
+    } catch {
+      // Silently handle — the UI shows an empty state which is fine
+    } finally {
+      setLoading(false)
     }
-    if (requestsData) setJoinRequests(requestsData as JoinRequest[])
-    setLoading(false)
   }, [session])
 
   useEffect(() => {
