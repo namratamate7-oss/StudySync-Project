@@ -32,21 +32,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    supabase
-      .auth
-      .getSession()
+    let active = true
+    const finishLoading = () => {
+      if (active) setLoading(false)
+    }
+    const timeout = window.setTimeout(finishLoading, 5000)
+
+    supabase.auth.getSession()
       .then(({ data: { session } }) => {
+        if (!active) return
         setSession(session)
         setUser(session?.user ?? null)
         if (session?.user) {
-          fetchProfile(session.user.id).finally(() => setLoading(false))
+          fetchProfile(session.user.id)
+            .catch(() => setProfile(null))
+            .finally(finishLoading)
         } else {
-          setLoading(false)
+          finishLoading()
         }
       })
-      .catch(() => {
-        setLoading(false)
-      })
+      .catch(finishLoading)
+      .finally(() => window.clearTimeout(timeout))
 
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session)
@@ -63,6 +69,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     })
 
     return () => {
+      active = false
+      window.clearTimeout(timeout)
       listener.subscription.unsubscribe()
     }
   }, [])
