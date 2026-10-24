@@ -17,7 +17,7 @@ export default function ProjectCard({ project, ownerProfile, hasRequested, isOwn
   const categoryColor = CATEGORY_COLORS[project.category] || '#3b82f6'
 
   return (
-    <div style={styles.card}>
+    <div className="ss-project-card" style={styles.card}>
       <div style={{ ...styles.categoryBar, background: categoryColor }} />
 
       <div style={styles.cardBody}>
@@ -93,8 +93,9 @@ const styles: Record<string, React.CSSProperties> = {
     background: '#fff',
     borderRadius: 'var(--radius-lg)',
     overflow: 'hidden',
-    border: '1px solid var(--color-neutral-200)',
-    transition: 'all var(--transition)',
+    border: '1px solid rgba(0,0,0,0.07)',
+    boxShadow: 'var(--shadow-sm)',
+    transition: 'transform var(--transition), box-shadow var(--transition), border-color var(--transition)',
     display: 'flex',
     flexDirection: 'column',
     animation: 'slideUp 300ms ease-out',
@@ -104,7 +105,7 @@ const styles: Record<string, React.CSSProperties> = {
     width: '100%',
   },
   cardBody: {
-    padding: '20px',
+    padding: '24px',
     display: 'flex',
     flexDirection: 'column',
     gap: '14px',
@@ -150,7 +151,7 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: '20px',
   },
   title: {
-    fontSize: '18px',
+    fontSize: '19px',
     fontWeight: 600,
     color: 'var(--color-neutral-900)',
     lineHeight: 1.3,
@@ -220,8 +221,9 @@ const styles: Record<string, React.CSSProperties> = {
     color: '#fff',
     fontSize: '13px',
     fontWeight: 600,
-    padding: '7px 14px',
+    padding: '9px 15px',
     borderRadius: 'var(--radius-sm)',
+    boxShadow: '0 6px 16px rgba(37,99,235,0.2)',
     transition: 'all var(--transition)',
     whiteSpace: 'nowrap',
   },

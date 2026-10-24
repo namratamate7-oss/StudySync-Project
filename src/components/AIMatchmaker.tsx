@@ -65,6 +65,7 @@ export default function AIMatchmaker({ projects, userSkills, profile, onProjectC
                 <div
                   key={match.project.id}
                   onClick={() => onProjectClick(match.project)}
+                  className="ss-match-card"
                   style={styles.matchCard}
                 >
                   <div style={styles.matchRank}>{idx + 1}</div>
@@ -131,9 +132,11 @@ const styles: Record<string, React.CSSProperties> = {
   container: {
     width: '320px',
     flexShrink: 0,
-    background: '#fff',
+    background: 'rgba(255,255,255,0.82)',
+    backdropFilter: 'blur(18px) saturate(160%)',
     borderRadius: 'var(--radius-lg)',
-    border: '1px solid var(--color-neutral-200)',
+    border: '1px solid rgba(0,0,0,0.07)',
+    boxShadow: 'var(--shadow-sm)',
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
@@ -145,8 +148,8 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex',
     alignItems: 'center',
     gap: '12px',
-    padding: '20px',
-    background: 'linear-gradient(135deg, #1e3a8a, #2563eb)',
+    padding: '22px 20px',
+    background: 'linear-gradient(145deg, #0b1f3a, #1e63b7)',
   },
   headerIcon: {
     width: '40px',
@@ -242,7 +245,7 @@ const styles: Record<string, React.CSSProperties> = {
     padding: '12px',
     borderRadius: 'var(--radius-md)',
     cursor: 'pointer',
-    transition: 'background var(--transition)',
+    transition: 'background var(--transition), transform var(--transition)',
     marginBottom: '4px',
   },
   matchRank: {
