@@ -8,10 +8,6 @@ export interface MatchResult {
   matchPercentage: number
 }
 
-/**
- * AI Matchmaker: scores projects against the user's skill set.
- * Projects requiring skills the user has score higher.
- */
 export function matchProjects(
   projects: Project[],
   userSkills: string[]
@@ -54,16 +50,16 @@ export function matchProjects(
 }
 
 export function getMatchLabel(percentage: number): string {
-  if (percentage >= 75) return 'Excellent Match'
-  if (percentage >= 50) return 'Good Match'
-  if (percentage >= 25) return 'Partial Match'
-  return 'Skills Gap'
+  if (percentage >= 80) return 'Excellent Match'
+  if (percentage >= 60) return 'Good Match'
+  if (percentage >= 40) return 'Partial Match'
+  return 'Low Match'
 }
 
 export function getMatchColor(percentage: number): string {
-  if (percentage >= 75) return '#10b981'
-  if (percentage >= 50) return '#3b82f6'
-  if (percentage >= 25) return '#f59e0b'
+  if (percentage >= 80) return '#10b981'
+  if (percentage >= 60) return '#3b82f6'
+  if (percentage >= 40) return '#f59e0b'
   return '#ef4444'
 }
 
@@ -89,4 +85,34 @@ export function formatDate(dateStr: string): string {
 
 export function getProfileById(profiles: Profile[], id: string): Profile | undefined {
   return profiles.find((p) => p.id === id)
+}
+
+export function calculateProfileCompletion(profile: Profile | null): number {
+  if (!profile) return 0
+  let filled = 0
+  const fields = [
+    profile.full_name,
+    profile.university,
+    profile.major,
+    profile.year,
+    profile.bio,
+    profile.github_url,
+    profile.linkedin_url,
+  ]
+  fields.forEach((f) => { if (f && f.trim()) filled++ })
+  if (profile.skills && profile.skills.length > 0) filled++
+  if (profile.interests && profile.interests.length > 0) filled++
+  return Math.round((filled / 9) * 100)
+}
+
+export function validatePassword(password: string): string | null {
+  if (password.length < 8) return 'Password must be at least 8 characters'
+  if (!/[A-Z]/.test(password)) return 'Password must include at least one uppercase letter'
+  if (!/[a-z]/.test(password)) return 'Password must include at least one lowercase letter'
+  if (!/[0-9]/.test(password)) return 'Password must include at least one number'
+  return null
+}
+
+export function validateEmail(email: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 }

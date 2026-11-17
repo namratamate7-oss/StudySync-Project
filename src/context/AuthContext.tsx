@@ -10,6 +10,8 @@ interface AuthContextType {
   loading: boolean
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: string | null }>
   signIn: (email: string, password: string) => Promise<{ error: string | null }>
+  signInWithGoogle: () => Promise<{ error: string | null }>
+  resetPassword: (email: string) => Promise<{ error: string | null }>
   signOut: () => Promise<void>
   refreshProfile: () => Promise<void>
 }
@@ -93,6 +95,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return { error: null }
   }
 
+  const signInWithGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin,
+      },
+    })
+    if (error) return { error: error.message }
+    return { error: null }
+  }
+
+  const resetPassword = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin,
+    })
+    if (error) return { error: error.message }
+    return { error: null }
+  }
+
   const signOut = async () => {
     await supabase.auth.signOut()
     setProfile(null)
@@ -103,7 +124,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ session, user, profile, loading, signUp, signIn, signOut, refreshProfile }}>
+    <AuthContext.Provider value={{
+      session, user, profile, loading,
+      signUp, signIn, signInWithGoogle, resetPassword, signOut, refreshProfile
+    }}>
       {children}
     </AuthContext.Provider>
   )
